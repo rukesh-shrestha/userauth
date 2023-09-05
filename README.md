@@ -30,19 +30,19 @@ git clone https://github.com/rukesh-shrestha/userauth.git userauth
 Go to the project directory
 
 ```bash
-  cd userauth
+cd userauth
 ```
 
 Install dependencies
 
 ```bash
-  npm install
+npm install
 ```
 
 Start the server
 
 ```bash
-  npm run dev
+npm run dev
 ```
 
 Before starting the serving add the below mention environmental variables. 
@@ -54,7 +54,7 @@ To run this project, you will need to add the following environment variables to
 
 `PORT`
 
-`DATABASE_CONNECTION_STRING`
+`CONNECTION_DATABASE_STRING`
 
 `SESSION_SECRET_KEY`
 
@@ -77,11 +77,10 @@ npm run dev
 ```
 ## API Reference
 
-#### Sign Up User
+### User Signup
 
-```http
-  POST /api/1.0.0/users/auth/signup
-```
+  #### /api/users/auth/signup `POST` 
+
 
 | Request Body | Type     | Description                |
 | :-------- | :------- | :------------------------- |
@@ -89,19 +88,23 @@ npm run dev
 | `firstname` | `string` | **Required**. Your first name |
 | `lastname` | `string` | **Required**. Your last name |
 | `password` | `string` | **Required**. Your password |
-| `confirmpassword` | `string` | **Required**. re-type password |
+| `confirmpassword` | `string` | **Required**. Re-type password |
 
 
-Response
-- Email Verification send `200 - success`
-- User Already Exist `400 - Error`
-- Password do not match `401 - Validation Error`
+Response `ERROR`
+- Missing Required Field `400`
+- Invalid Email Found `400`
+- User Already Exist `401`
+- Password Do Not Match `400`
+- Invalid Email Found `400`
+- Password Must be Strong `400`
 
-#### Sign In User
+Response `SUCCESS`
+- Verification Email Send `200`
 
-```http
-  POST /api/1.0.0/users/auth/signin
-```
+### User Sign In
+
+#### /api/users/auth/signin `POST`
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
@@ -120,3 +123,4 @@ Response
 ## Authors
 
 - [@Rukesh Shrestha](https://shrestharukesh.com.np)
+
