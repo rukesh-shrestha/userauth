@@ -28,9 +28,9 @@ const UserSchema = mongoose.Schema(
       trim: true,
     },
     status: {
-      type: Boolean,
-      default: false,
-      enum: [true, false],
+      type: String,
+      default: "deactivate",
+      enum: ["activate", "deactivate"],
     },
     isverified: {
       type: Boolean,
@@ -41,9 +41,6 @@ const UserSchema = mongoose.Schema(
       type: String,
     },
     password: {
-      type: String,
-    },
-    image: {
       type: String,
     },
   },

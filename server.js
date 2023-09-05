@@ -12,7 +12,7 @@ const PORT = process.env.PORT;
 //middleware
 app.use(morgan("dev"));
 app.use(express.json());
-app.use("/api/v1", userRouter);
+app.use("/api/users/", userRouter);
 
 app.listen(PORT, () =>
   console.log(`The Application is Hosted on http://localhost:${PORT}`)

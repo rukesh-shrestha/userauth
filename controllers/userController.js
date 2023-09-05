@@ -2,6 +2,7 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import User from "../model/User.js";
+import sendVerificationEmail from "../utils/mail/sendVerificationEmail.js";
 
 export const UserRegistrationHandlier = async (req, res) => {
   try {
@@ -42,16 +43,12 @@ export const UserRegistrationHandlier = async (req, res) => {
         emailtoken: crypto.randomBytes(64).toString("hex"),
         password: hashedPassword,
       });
+      sendVerificationEmail(newuser);
       res.status(200).json({
         status: "success",
         data: {
           message: {
-            email: newuser.email,
-            firstname: newuser.firstname,
-            lastname: newuser.lastname,
-            role: newuser.role,
-            isverified: false,
-            status: false,
+            mail: "verification email send. check your inbox spam folder.",
           },
         },
       });
