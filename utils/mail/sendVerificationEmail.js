@@ -3,7 +3,7 @@ import createMailTransporter from "./createMailTransporter.js";
 const sendVerificationEmail = (user) => {
   const transpoter = createMailTransporter();
   const mailOptions = {
-    from: '"Rukesh Shrestha" <rukeshportfolio@gmail.com>',
+    from: '"Rukesh Shrestha"',
     to: user.email,
     subject: "Verify Your Account - Action Required",
     html: `
@@ -16,7 +16,9 @@ const sendVerificationEmail = (user) => {
         <br>
         
         
-        <a href='${process.env.DOMAIN_NAME}/api/users/verify-email?emailtoken=${
+        <a href='${
+          process.env.DOMAIN_NAME
+        }/api/users/auth/verify-email?emailtoken=${
       user.emailtoken
     }' style="text-decoration:none">Verify Your Email</a>
         

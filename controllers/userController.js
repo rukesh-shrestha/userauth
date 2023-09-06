@@ -55,9 +55,9 @@ export const UserRegistrationHandlier = async (req, res) => {
     }
   } catch (error) {
     res.json({
-      status: "error",
+      status: error.message === "User Already Exist" ? `fail` : `error`,
       data: {
-        error: error.message,
+        message: error.message,
       },
     });
   }
