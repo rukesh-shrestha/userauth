@@ -2,6 +2,7 @@ import validator from "validator";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import User from "../model/User.js";
+import UserSecurity from "../model/UserSecurity.js";
 import sendVerificationEmail from "../utils/mail/sendVerificationEmail.js";
 import generateAccessToken from "../utils/accessToken/accessToken.js";
 
@@ -91,9 +92,47 @@ export const userLoginHandlier = async (req, res) => {
     }
   } catch (error) {
     res.json({
-      status: error.message === "User Not Found." ? `fail` : `error`,
+      status: res.statusCode === 401 ? `fail` : `error`,
       data: {
         message: error.message,
+      },
+    });
+  }
+};
+
+export const securityQuestionHandler = async (req, res) => {
+  try {
+    const { dob, pin, email } = req.body;
+
+    if (!dob || !pin) {
+      res.status(400);
+      throw new Error("Missing Required Field.");
+    }
+
+    const userData = await User.findOne({ email });
+    if (!userData) {
+      res.status(401);
+      throw new Error("User Not Found.");
+    }
+    const id = userData.id;
+    const securityData = await UserSecurity.findOne({ id });
+    if (!securityData) {
+      res.status(401);
+      throw new Error("Security Question Not Set.");
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        message: req.body,
+        user: req.user,
+      },
+    });
+  } catch (error) {
+    res.json({
+      status: res.statusCode === 401 ? `fail` : `error`,
+      data: {
+        error: error.message,
       },
     });
   }

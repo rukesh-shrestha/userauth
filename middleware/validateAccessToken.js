@@ -11,21 +11,20 @@ const validateToken = async (req, res, next) => {
           res.status(401);
           throw new Error("User is not Authorized -  Invalid Token");
         }
+        if (!decoded.user.status === "activate" || !decoded.user.isverified) {
+          res.status(401);
+          throw new Error("User Not Verified.");
+        }
         req.user = decoded.user;
         next();
       });
-
-      if (!token) {
-        res.status(401);
-        throw new Error("user is not Authorized or the token is missing");
-      }
     } else {
       res.status(400);
       throw new Error("Missing  Authorized Token");
     }
   } catch (error) {
     res.json({
-      status: "error",
+      status: res.statusCode === 401 ? `fail` : `error`,
       data: {
         error: error.message,
       },
