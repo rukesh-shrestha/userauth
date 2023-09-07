@@ -40,6 +40,9 @@ const UserSchema = mongoose.Schema(
     emailtoken: {
       type: String,
     },
+    resettoken: {
+      type: String,
+    },
     password: {
       type: String,
     },

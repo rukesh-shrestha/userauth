@@ -8,11 +8,10 @@ const UserSecutirySchema = mongoose.Schema(
       trim: true,
     },
     pin: {
-      type: Number,
+      type: String,
       required: [true, "Missing PIN"],
-      trim: true,
-      min: [4, "Must be at least 4, got {VALUE}"],
-      max: [6, "Must be at greater than  6, got {VALUE}"],
+      minLength: [4, "PIN should be at least 4 digit long."],
+      maxLength: [6, "PIN should not be at more than 6 digit long."],
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

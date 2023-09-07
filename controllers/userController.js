@@ -5,6 +5,7 @@ import User from "../model/User.js";
 import UserSecurity from "../model/UserSecurity.js";
 import sendVerificationEmail from "../utils/mail/sendVerificationEmail.js";
 import generateAccessToken from "../utils/accessToken/accessToken.js";
+import sendResetPasswordMail from "../utils/mail/resetPassword.js";
 
 export const userRegistrationHandlier = async (req, res) => {
   try {
@@ -114,23 +115,109 @@ export const securityQuestionHandler = async (req, res) => {
       res.status(401);
       throw new Error("User Not Found.");
     }
-    const id = userData.id;
-    const securityData = await UserSecurity.findOne({ id });
-    if (!securityData) {
-      res.status(401);
-      throw new Error("Security Question Not Set.");
-    }
+    const user = userData.id;
+    const securityUser = await UserSecurity.findOne({ user });
 
-    res.status(200).json({
-      status: "success",
+    if (!securityUser) {
+      await UserSecurity.create({
+        dob,
+        pin,
+        user,
+      });
+      res.status(200).json({
+        status: "success",
+        data: {
+          message: "Security Question Set.",
+        },
+      });
+    } else {
+      res.status(400);
+      throw new Error("Question Already Set");
+    }
+  } catch (error) {
+    if (res.statusCode === 200) {
+      res.status(400);
+    }
+    res.json({
+      status: res.statusCode === 401 ? `fail` : `error`,
       data: {
-        message: req.body,
-        user: req.user,
+        error: error.message,
       },
     });
+  }
+};
+
+export const userForgetPassword = async (req, res) => {
+  try {
+    const { dob, pin, email } = req.body;
+    const userData = await User.findOne({ email });
+
+    if (!userData) {
+      res.status(401);
+      throw new Error("User Not Found.");
+    }
+    const user = userData.id;
+    const securityUser = await UserSecurity.findOne({ user });
+
+    if (
+      !validator.equals(dob, securityUser.dob.toISOString().split("T")[0]) ||
+      !validator.equals(pin, securityUser.pin)
+    ) {
+      res.status(401);
+      throw new Error(
+        "Cannot Reset Password. Security Question Validation Error."
+      );
+    } else {
+      userData.resettoken = crypto.randomBytes(64).toString("hex");
+
+      const newUserData = await userData.save();
+      sendResetPasswordMail(newUserData);
+      res.status(200).json({
+        status: "success",
+        data: {
+          mail: "Reset Password Link Send",
+        },
+      });
+    }
   } catch (error) {
     res.json({
       status: res.statusCode === 401 ? `fail` : `error`,
+      data: {
+        error: error.message,
+      },
+    });
+  }
+};
+
+export const verifyPasswordHandlier = async (req, res) => {
+  try {
+    const resettoken = req.query.resettoken;
+    console.log(resettoken);
+    if (!resettoken) {
+      res.status(404);
+      throw new Error("token not found");
+    }
+    const user = await User.findOne({ resettoken });
+
+    if (user) {
+      user.resettoken = null;
+      const hashedPassword = await bcrypt.hash("NepPass@80", 10);
+
+      user.password = hashedPassword;
+      await user.save();
+      res.status(200).json({
+        status: "success",
+        data: {
+          message: "Password Reset. Go back to Login.",
+        },
+      });
+    } else {
+      res.status(498);
+      throw new Error("Token validation Failed");
+    }
+  } catch (error) {
+    res.json({
+      status: "error",
       data: {
         error: error.message,
       },
