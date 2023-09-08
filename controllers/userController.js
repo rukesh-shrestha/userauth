@@ -7,6 +7,11 @@ import sendVerificationEmail from "../utils/mail/sendVerificationEmail.js";
 import generateAccessToken from "../utils/accessToken/accessToken.js";
 import sendResetPasswordMail from "../utils/mail/resetPassword.js";
 
+function generatePassword() {
+  const randomPassword = Math.random().toString(36).slice(2) + `!`;
+  return randomPassword.charAt(0).toUpperCase() + randomPassword;
+}
+let randomPass;
 export const userRegistrationHandlier = async (req, res) => {
   try {
     const { email, firstname, lastname, password, confirmpassword } = req.body;
@@ -149,6 +154,7 @@ export const securityQuestionHandler = async (req, res) => {
 
 export const userForgetPassword = async (req, res) => {
   try {
+    randomPass = generatePassword();
     const { dob, pin, email } = req.body;
     const userData = await User.findOne({ email });
 
@@ -171,7 +177,7 @@ export const userForgetPassword = async (req, res) => {
       userData.resettoken = crypto.randomBytes(64).toString("hex");
 
       const newUserData = await userData.save();
-      sendResetPasswordMail(newUserData);
+      sendResetPasswordMail(newUserData, randomPass);
       res.status(200).json({
         status: "success",
         data: {
@@ -201,7 +207,7 @@ export const verifyPasswordHandlier = async (req, res) => {
 
     if (user) {
       user.resettoken = null;
-      const hashedPassword = await bcrypt.hash("NepPass@80", 10);
+      const hashedPassword = await bcrypt.hash(randomPass, 10);
 
       user.password = hashedPassword;
       await user.save();

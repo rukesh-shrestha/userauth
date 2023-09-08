@@ -1,6 +1,6 @@
 import createMailTransporter from "./createMailTransporter.js";
 
-const sendResetPasswordMail = (user) => {
+const sendResetPasswordMail = (user, pass) => {
   const transpoter = createMailTransporter();
   const mailOptions = {
     from: '"Rukesh Shrestha"',
@@ -27,7 +27,7 @@ const sendResetPasswordMail = (user) => {
         <br>
         <br>
 
-        Please note that this link is valid for the next 30 minutes. After this time, you'll need to request another password reset. After clicking the link your password will be set to <b>NepPass@80</b><br>
+        Please note that this link is valid for the next 30 minutes. After this time, you'll need to request another password reset. After clicking the link your password will be set to <b>${pass}</b><br>
         Then , you can login back and change the password. 
         <br>    
 
