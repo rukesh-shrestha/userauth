@@ -12,7 +12,7 @@ function generatePassword() {
   return randomPassword.charAt(0).toUpperCase() + randomPassword;
 }
 let randomPass;
-export const userRegistrationHandlier = async (req, res) => {
+export const userRegistrationHandler = async (req, res) => {
   try {
     const { email, firstname, lastname, password, confirmpassword } = req.body;
 
@@ -71,7 +71,7 @@ export const userRegistrationHandlier = async (req, res) => {
   }
 };
 
-export const userLoginHandlier = async (req, res) => {
+export const userLoginHandler = async (req, res) => {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -110,7 +110,7 @@ export const securityQuestionHandler = async (req, res) => {
   try {
     const { dob, pin, email } = req.body;
 
-    if (!dob || !pin) {
+    if (!dob || !pin || !email) {
       res.status(400);
       throw new Error("Missing Required Field.");
     }
@@ -152,7 +152,7 @@ export const securityQuestionHandler = async (req, res) => {
   }
 };
 
-export const userForgetPassword = async (req, res) => {
+export const userForgetPasswordHandler = async (req, res) => {
   try {
     randomPass = generatePassword();
     const { dob, pin, email } = req.body;
@@ -200,7 +200,7 @@ export const userForgetPassword = async (req, res) => {
   }
 };
 
-export const verifyPasswordHandlier = async (req, res) => {
+export const verifyPasswordHandler = async (req, res) => {
   try {
     const resettoken = req.query.resettoken;
     console.log(resettoken);
@@ -234,4 +234,13 @@ export const verifyPasswordHandlier = async (req, res) => {
       },
     });
   }
+};
+
+export const changePasswordHandler = (req, res) => {
+  res.status(200).json({
+    status: "success",
+    data: {
+      message: "Updated",
+    },
+  });
 };
