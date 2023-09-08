@@ -1,11 +1,13 @@
 
+
 # User Authentication
 User  Authentication and Authorization API.
 
 ### Feature
 - User can register/signin from google account.
 - Email verification.
-- Resetting password.
+- Resetting password with security questions and email verification. 
+- Change Password.
 - Custom user registration & signin.
 - Three user role.
 - Role based permission.
@@ -30,19 +32,19 @@ git clone https://github.com/rukesh-shrestha/userauth.git userauth
 Go to the project directory
 
 ```bash
-cd userauth
+  cd userauth
 ```
 
 Install dependencies
 
 ```bash
-npm install
+  npm install
 ```
 
 Start the server
 
 ```bash
-npm run dev
+  npm run dev
 ```
 
 Before starting the serving add the below mention environmental variables. 
@@ -79,7 +81,7 @@ npm run dev
 
 ### User Signup
 
-  #### /api/users/auth/signup `POST` 
+#### /api/users/auth/signup `POST` 
 
 
 | Request Body | Type     | Description                |
@@ -106,21 +108,62 @@ Response `SUCCESS`
 
 #### /api/users/auth/signin `POST`
 
-| Parameter | Type     | Description                       |
+| Request Body | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `email` | `string` | **Required**. Your email address |
 | `password` | `string` | **Required**. Your password |
 
 
 
-Response
+Response `SUCCESS`
 - Token `200 - success`
-- User not authorized [password or email doesnot match] `401 - Validation Error`
+
+Response `ERROR`
+- User Not Found [password or email doesnot match] `401 - Validation Error`
+- Missing Required Field `400 - Bad Request`
 
 
+### User Security Question Set
+
+
+#### /api/users/auth/security/set/questions `POST`
+
+*Required*
+
+`Bearer Token` - Get from Login
+
+
+| Request Body | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `email` | `string` | **Required**. Your email address |
+| `dob` | `string` | **Required**. SET date of birth |
+| `pin` | `string` | **Required**. SET 4 or 6 digit PIN |
+
+
+
+Response `SUCCESS`
+- Security Quesetion Set `200 - success`
+
+Response `ERROR`
+- Missing Required Field - `400 - Bad Request`
+- User Not Found  `401 - Unauthorized`
+- Question Already Set `400 - Bad Request`
+- User Not Found `401- Unauthorized`
+
+## Contributing
+
+Contributions are always welcome!
+
+See `contributing.md` for ways to get started.
+
+Please adhere to this project's `code of conduct`.
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
 
 
 ## Authors
 
 - [@Rukesh Shrestha](https://shrestharukesh.com.np)
-
