@@ -13,8 +13,8 @@ const userRouter = express.Router();
 userRouter.post("/signup", userRegistrationHandlier);
 userRouter.get("/verify-email", verifyEmail);
 userRouter.post("/signin", userLoginHandlier);
-userRouter.post("/reset-password", verifyPasswordHandlier);
-userRouter.get("/resetpassword", userForgetPassword);
+userRouter.get("/reset-password", verifyPasswordHandlier);
+userRouter.post("/resetpassword", userForgetPassword);
 
 userRouter.post(
   "/security/set/questions",

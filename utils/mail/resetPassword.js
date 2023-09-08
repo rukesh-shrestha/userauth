@@ -27,7 +27,8 @@ const sendResetPasswordMail = (user) => {
         <br>
         <br>
 
-        Please note that this link is valid for the next 30 minutes. After this time, you'll need to request another password reset.
+        Please note that this link is valid for the next 30 minutes. After this time, you'll need to request another password reset. After clicking the link your password will be set to <b>NepPass@80</b><br>
+        Then , you can login back and change the password. 
         <br>    
 
         If you encounter any issues, feel free to contact at info@shrestharukesh.com.np.<br>
