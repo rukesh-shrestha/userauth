@@ -156,6 +156,11 @@ export const userForgetPassword = async (req, res) => {
   try {
     randomPass = generatePassword();
     const { dob, pin, email } = req.body;
+
+    if (!dob || !pin || !email) {
+      res.status(400);
+      throw new Error("Missing Security Answers.");
+    }
     const userData = await User.findOne({ email });
 
     if (!userData) {
