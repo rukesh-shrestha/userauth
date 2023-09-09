@@ -203,7 +203,7 @@ export const userForgetPasswordHandler = async (req, res) => {
 export const verifyPasswordHandler = async (req, res) => {
   try {
     const resettoken = req.query.resettoken;
-    console.log(resettoken);
+
     if (!resettoken) {
       res.status(404);
       throw new Error("token not found");
