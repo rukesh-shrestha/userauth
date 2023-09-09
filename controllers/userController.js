@@ -236,11 +236,62 @@ export const verifyPasswordHandler = async (req, res) => {
   }
 };
 
-export const changePasswordHandler = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    data: {
-      message: "Updated",
-    },
-  });
+export const changePasswordHandler = async (req, res) => {
+  try {
+    const { oldpassword, newpassword, confirmpassword } = req.body;
+    const email = req.user.email;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      res.status(401);
+      throw new Error("User Not Found.");
+    }
+
+    if (!(await bcrypt.compare(oldpassword, user.password))) {
+      res.status(401);
+      throw new Error("Old Password Mismatch - Validation Error ");
+    }
+
+    if (!validator.equals(newpassword, confirmpassword)) {
+      res.status(400);
+      throw new Error("New password do not match.");
+    }
+
+    if (!validator.isStrongPassword(newpassword)) {
+      res.status(400);
+      throw new Error(
+        "password must have min_length: 8; min_lowercase: 1; min_uppercase: 1; min_number: 1 ; min_symboles: 1 ;"
+      );
+    }
+    const hashedPassword = await bcrypt.hash(newpassword, 10);
+
+    const updateUser = await User.updateOne(
+      {
+        email,
+      },
+      {
+        $set: {
+          password: hashedPassword,
+        },
+      }
+    );
+
+    if (!updateUser) {
+      res.status(401);
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        message: "Updated",
+      },
+    });
+  } catch (error) {
+    res.json({
+      status: res.statusCode === 401 ? `fail` : `error`,
+      data: {
+        error: error.message,
+      },
+    });
+  }
 };
