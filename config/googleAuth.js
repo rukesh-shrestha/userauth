@@ -29,7 +29,7 @@ const googleAuth = async (passport) => {
           const isUser = await User.findOne({ email });
 
           if (isUser) {
-            done("User Already Exist", null);
+            done("User Already Exists", null);
           } else {
             const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -41,8 +41,15 @@ const googleAuth = async (passport) => {
               emailtoken: crypto.randomBytes(64).toString("hex"),
               password: hashedPassword,
             });
+
+            done(null, newUser, {
+              status: "success",
+              data: {
+                message: "Account Created Successful",
+                mail: "Mail Send. Check your inbox of spam folder.",
+              },
+            });
             googleVerificationEmail(newUser, password);
-            return done(null, isUser, { message: "Account Created" });
           }
         } catch (error) {
           done(error, null);

@@ -24,7 +24,11 @@ userRouter.get(
   async (req, res) => {
     try {
       res.json({
-        message: "Done",
+        status: "success",
+        data: {
+          message: "Account Created Successful",
+          mail: "Mail Send. Check your inbox of spam folder.",
+        },
       });
     } catch (error) {
       res.json({
