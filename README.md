@@ -78,7 +78,31 @@ npm run dev
 ```
 ## API Reference
 
-### User Signup
+
+### User Signup - Google
+
+#### /api/users/auth/google/signup `POST` 
+
+
+| Request Body | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `email` | `string` | **Required**. Your email address |
+| `firstname` | `string` | **Required**. Your first name |
+| `lastname` | `string` | **Required**. Your last name |
+| `password` | `string` | **Required**. Auto Generated password|
+
+
+
+Response `ERROR`
+- User Already Exist `401`
+
+
+Response `SUCCESS`
+- Verification Email Send `200`
+
+
+
+### User Signup - Custom
 
 #### /api/users/auth/signup `POST` 
 
