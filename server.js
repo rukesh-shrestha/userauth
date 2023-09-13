@@ -6,15 +6,18 @@ import session from "express-session";
 import connectDB from "./config/dbConnector.js";
 const app = express();
 connectDB();
+import swaggerUI from "swagger-ui-express";
 import userRouter from "./routers/userRoutes.js";
 import passport from "passport";
 import googleAuth from "./config/googleAuth.js";
 import MongoStore from "connect-mongo";
+import YAML from "yamljs";
 googleAuth(passport);
-
+const swaggerDocument = YAML.load("./swagger/apiDocs.yaml");
 const PORT = process.env.PORT;
 
 //middleware
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(
   session({
     secret: process.env.SESSION_SECRET_KEY,

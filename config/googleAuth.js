@@ -34,6 +34,7 @@ const googleAuth = async (passport) => {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             const newUser = await User.create({
+              googleID: profile.id,
               email,
               firstname,
               lastname,

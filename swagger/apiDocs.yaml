@@ -1,0 +1,564 @@
+openapi: 3.0.0
+info:
+  title: User Authentication System
+  version: 0.0.1
+  description: |
+    This is the simple API documentation for the user authencation system. It is based on the OpenAPI 3.0 specification.
+
+    ## Features
+     - User can register/signin from google account.
+     - Email verification.
+     - Resetting password with security questions and email verification.
+     -   Change Password.
+     -   Custom user registration & signin.
+     -   Three user role.
+     -   Role based permission.
+
+    ## API documentation
+     - Updated on 11 Sept 2023
+     
+    ## Some useful links:
+    - [User Authentication System Repository](https://github.com/rukesh-shrestha/userauth.git)
+  contact:
+    email: info@shrestharukesh.com.np
+
+servers:
+  - url: https://userauth.shrestharukesh.com.np/
+    description: Hosted server
+  - url: http://localhost:3000
+    description: Local Server
+
+#tags header of the each api docs
+tags:
+  - name: User
+    description: Operations related to custom user authentication and authorization. Can be used for superadmin and admin
+
+# api docs path
+paths: # Adding the 'paths' property
+  /api/users/auth/google/signup:
+    get:
+      summary: Register or Login with google account
+      description: register or login with google account
+      tags:
+        - User
+      responses:
+        "200":
+          description: User Created Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "verification email send. check your inbox spam folder."
+        "401":
+          description: Unautthorized - User Already Exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "User Already Exist"
+
+  /api/users/auth/signup:
+    post:
+      tags:
+        - User
+      summary: Create the new user
+      description: Registering the new superadmin or admin user for the sign up. If the email starts with PAT then it is admin otherwise superadmin.
+      requestBody:
+        description: User properties object
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  description: email of the user
+                  example: someone@heraldcollege.edu.np
+                firstName:
+                  type: string
+                  description: first name of the user
+                  example: Ram Shree
+                lastName:
+                  type: string
+                  description: last name of the user
+                  example: Sharma
+                password:
+                  type: string
+                  description: strong password of the user. Must include one special character, one number and the one upper case.
+                  example: password23
+                confirmPassword:
+                  type: string
+                  description: Re-type your password
+                  example: password23
+        required: true
+
+      responses:
+        "200":
+          description: User Created Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "verification email send. check your inbox spam folder."
+        "400":
+          description: Throw when invalid email; password do not match; missing required field
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Missing Required Field"
+
+        "401":
+          description: Unautthorized - User Already Exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "User Already Exist"
+
+  /api/users/auth/signin:
+    post:
+      tags:
+        - User
+      summary: Authenticate the Signup users
+      description: authenticate the users. Only for the admin and super admin.
+
+      requestBody:
+        description: User object
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  description: register user email address
+                  example: shreeram23@gmail.com
+                password:
+                  type: string
+                  description: register user password
+                  example: adminadmin
+        required: true
+      responses:
+        "200":
+          description: Authenticated Successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: "sycjbjhfvjfvjfwfiwgiwbfe4y584t564rrebkhdbvgi"
+        "400":
+          description: Missing Field [email or password]; Invalid Email Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Invalid Email Found"
+
+        "401":
+          description: Validation Error - User Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "User Not Found"
+
+  /api/users/auth/security/set/questions:
+    post:
+      tags:
+        - User
+      summary: Set the Security Questions of the Authenticate Users
+      description: Authenticate the users and Set the Security question for password reset.
+
+      requestBody:
+        description: User object
+        content:
+          application/json:
+            schema:
+              properties:
+                dob:
+                  type: string
+                  description: User date of birth
+                  example: 1997-10-29
+                pin:
+                  type: string
+                  description: 4 to 6 digit pin
+                  example: 2354
+                email:
+                  type: string
+                  description: register user email address
+                  example: shreeram23@gmail.com
+        required: true
+      responses:
+        "200":
+          description: Security Question Set Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Security Question Set"
+        "400":
+          description: Missing Field [DOB or PIN or EMAIL]; Questions Already Set
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Questions Already Set"
+
+        "401":
+          description: Validation Error - User Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "User Not Found"
+
+      security:
+        - bearerAuth: []
+
+  /api/users/auth/resetpassword:
+    post:
+      tags:
+        - User
+      summary: Reset the user pasword
+      description: Reset the password of the user who forget the password. The reset passwod is send to register email.
+
+      requestBody:
+        description: User object
+        content:
+          application/json:
+            schema:
+              properties:
+                dob:
+                  type: string
+                  description: User date of birth
+                  example: 1997-10-29
+                pin:
+                  type: string
+                  description: 4 to 6 digit pin
+                  example: 2354
+                email:
+                  type: string
+                  description: register user email address
+                  example: shreeram23@gmail.com
+
+        required: true
+      responses:
+        "200":
+          description: Reset password of the user by the security question
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Reset Password Link Sent."
+
+        "400":
+          description: Missing Field [email or password]
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Missing security questions"
+        "401":
+          description: Throw when User Not Found - Doesnot have any account with the given email; Cannot reset password.  Security Question do not match.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "User Not Found"
+
+  /api/users/auth/updatepassword:
+    post:
+      tags:
+        - User
+      summary: Update the Users Password
+      description: Change the password of the user
+
+      requestBody:
+        description: User object
+        content:
+          application/json:
+            schema:
+              properties:
+                oldpassword:
+                  type: string
+                  description: User Current Password
+                  example: R@44sjguuhf
+                newpassword:
+                  type: string
+                  description: Set New Password
+                  example: D!dndfngkj23
+                confirmpassword:
+                  type: string
+                  description: Re-type New Password
+                  example: D!dndfngkj23
+        required: true
+      responses:
+        "200":
+          description: Reset password of the user by the security question
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "Updated"
+        "400":
+          description: Password do not match; Password must have min 1 lowercase, 1 uppercase, 1 number and 1 special symbols.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "Password do not match"
+
+        "401":
+          description: Old password do not match; User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: fail
+                  data:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+                        example: "User Not Found"
+      security:
+        - bearerAuth: []
+
+# api model schema
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+        - firstName
+        - lastName
+
+      properties:
+        googleId:
+          type: string
+          description: User Id from the google authentication
+          example: hbjfs794_8hnj
+
+        email:
+          type: string
+          description: user login email from the google authentication
+
+          example: harihar@gmail.com
+        firstName:
+          type: string
+          description: user given name from the google authentication
+          example: harihar
+        lastName:
+          type: string
+          description: user family name from the google authentication
+          example: archarya
+        role:
+          type: string
+          description: User role in the system. The default value is set as per the user email
+          enum: [superadmin, admin, staff]
+          default: staff
+          example: staff
+        status:
+          type: boolean
+          description: User status in the system.
+          enum: [true, false]
+          default: false
+          example: true
+        isverified:
+          type: boolean
+          description: Verified User status in the system.
+          enum: [true, false]
+          default: false
+          example: true
+        emailtoken:
+          type: string
+        resettoken:
+          type: string
+
+        createdAt:
+          type: string
+          description: user created date and time. Auto Field
+          example: 2023-08-02T16:05:13.770+00:00
+        updatedAt:
+          type: string
+          description: User data updated date and time. Auto Field
+          example: 2023-08-02T16:05:13.770+00:00
+    UserSecurity:
+      type: object
+      required:
+        - dob
+        - pin
+        - user
+
+      properties:
+        dob:
+          type: string
+          description: Date of birth of the user
+        pin:
+          type: string
+          description: 4 to 6 digit pin
+        user:
+          $ref: "#/components/schemas/User"
+
+        createdAt:
+          type: string
+          description: user created date and time. Auto Field
+          example: 2023-08-02T16:05:13.770+00:00
+        updatedAt:
+          type: string
+          description: User data updated date and time. Auto Field
+          example: 2023-08-02T16:05:13.770+00:00
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+#

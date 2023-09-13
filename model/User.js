@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 const UserSchema = mongoose.Schema(
   {
+    googleID: {
+      type: String,
+    },
     email: {
       type: String,
       required: [true, "Missing Email"],
