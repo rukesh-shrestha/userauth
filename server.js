@@ -2,7 +2,7 @@ import express from "express";
 import morgan from "morgan";
 import "dotenv/config";
 import session from "express-session";
-
+import cors from "cors";
 import connectDB from "./config/dbConnector.js";
 const app = express();
 connectDB();
@@ -17,6 +17,12 @@ const swaggerDocument = YAML.load("./swagger/apiDocs.yaml");
 const PORT = process.env.PORT;
 
 //middleware
+const corsOptions = {
+  origin: process.env.DOMAIN_NAME,
+  methods: "GET,POST",
+  credentials: true, // If you need to allow sending cookies or authentication headers
+};
+app.use(cors(corsOptions));
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 app.use(
   session({
