@@ -1,6 +1,11 @@
 
 # User Authentication
-User  Authentication and Authorization API.
+User Authentication and Authorization API.
+
+# Stack
+- Node js
+- Express js
+- Mongodb 
 
 ### Feature
 - User can register/signin from google account.
@@ -229,13 +234,6 @@ Response `ERROR`
 - User not found `401 - Unauthorized`
 - Unauthorized `401`
 
-## Contributing
-
-Contributions are always welcome!
-
-See `contributing.md` for ways to get started.
-
-Please adhere to this project's `code of conduct`.
 
 
 ## License
