@@ -82,7 +82,8 @@ Start the server
 npm run dev
 ```
 ## API Reference
-
+### API Documentation from Swagger
+#### /api-docs `GET` 
 
 ### User Signup - Google
 
