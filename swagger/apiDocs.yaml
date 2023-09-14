@@ -91,11 +91,11 @@ paths: # Adding the 'paths' property
                   type: string
                   description: email of the user
                   example: someone@heraldcollege.edu.np
-                firstName:
+                firstname:
                   type: string
                   description: first name of the user
                   example: Ram Shree
-                lastName:
+                lastname:
                   type: string
                   description: last name of the user
                   example: Sharma
@@ -103,7 +103,7 @@ paths: # Adding the 'paths' property
                   type: string
                   description: strong password of the user. Must include one special character, one number and the one upper case.
                   example: password23
-                confirmPassword:
+                confirmpassword:
                   type: string
                   description: Re-type your password
                   example: password23
