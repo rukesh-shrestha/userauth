@@ -1,6 +1,11 @@
 
 # User Authentication
-User  Authentication and Authorization API.
+User Authentication and Authorization API.
+
+# Stack
+- Node js
+- Express js
+- Mongodb 
 
 ### Feature
 - User can register/signin from google account.
